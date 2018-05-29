@@ -13,14 +13,6 @@ window.onload = function () {
     speed: 1,
     toTop: 0,
     bottom: 0
-  },
-  mouse = {
-    startX: 0,
-    positionX: 0
-  },
-  look = {
-    x: 0,
-    y: 0
   };
 
   document.addEventListener('keydown', function(event){
@@ -60,10 +52,6 @@ window.onload = function () {
       break;
     }
   });
-  document.addEventListener('mousemove', function(event){
-    mouse.positionX = event.clientX;
-    rotatCameraX(mouse, look);
-  });
 
 
   var renderer = new THREE.WebGLRenderer({canvas: canvas});
@@ -75,6 +63,10 @@ window.onload = function () {
 
   var camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 5000);
   camera.position.set(0, -50, 700); 
+
+  var container = document.getElementById('container');
+  var stats = new Stats();
+  container.appendChild( stats.dom );
 
 
 
@@ -112,6 +104,7 @@ window.onload = function () {
   sphere.receiveShadow = false;
   scene.add(sphere);
 
+
   //plane
   var plane_geom = new THREE.PlaneBufferGeometry(2000,2000,50,50); 
   var plane_mat = new THREE.MeshStandardMaterial({color: 0x008cf0});
@@ -120,16 +113,20 @@ window.onload = function () {
     plane.receiveShadow = true;
     plane.rotation.x = -Math.PI / 2;
     scene.add(plane);
+    camera.lookAt(cube.position);
 
   animate();
       function animate () {
+        
         requestAnimationFrame(animate);
-        cube.rotation.y += 0.01;
+        cube.rotation.y += 0.1;
         camera.position.x += move.right - move.left;
         camera.position.z += move.backward - move.forward;
         camera.position.y += move.toTop - move.bottom;
-        camera.rotation.y = look.x;
-        sphere.rotation.y += 0.015;
+        sphere.rotation.y += 0.15;
         renderer.render(scene, camera);
+        stats.update();
+        
       }
+
 }
